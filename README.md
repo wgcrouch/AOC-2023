@@ -1,0 +1,1 @@
+to run a day `yarn ts-node day1`
