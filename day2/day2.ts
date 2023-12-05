@@ -1,10 +1,8 @@
-import { day2input } from "./input";
-
 const MAX_RED = 12;
 const MAX_GREEN = 13;
 const MAX_BLUE = 14;
 
-function day2Part1(input: string) {
+export function day2Part1(input: string) {
   const lines = input.split("\n");
 
   let total = 0;
@@ -32,7 +30,7 @@ function day2Part1(input: string) {
   return total;
 }
 
-function day2Part2(input: string) {
+export function day2Part2(input: string) {
   const lines = input.split("\n");
 
   let total = 0;
@@ -66,6 +64,3 @@ function day2Part2(input: string) {
 
   return total;
 }
-console.log("* Day 2 *");
-console.log("Part 1:", day2Part1(day2input));
-console.log("Part 2:", day2Part2(day2input));

@@ -1,1 +1,1 @@
-to run a day `yarn ts-node day1`
+to run a day `yarn test -t "day 5`

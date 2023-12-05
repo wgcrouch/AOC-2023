@@ -1,5 +1,3 @@
-import { day5Input } from "./input";
-
 type DestSourceMap = {
   destinationStart: number;
   sourceStart: number;
@@ -56,7 +54,7 @@ function parseMaps(input: string) {
 
 function mapId(maps: Maps, id: number, source: MapId) {
   const map = maps[source].find(
-    ({ sourceStart, length }) => id >= sourceStart && id < sourceStart + length,
+    ({ sourceStart, length }) => id >= sourceStart && id < sourceStart + length
   );
 
   if (map) {
@@ -75,7 +73,7 @@ function findSeedLocation(maps: Maps, seed: number) {
   return location;
 }
 
-function day5Part1(input: string) {
+export function day5Part1(input: string) {
   const maps = parseMaps(input);
   const [seedsSection] = input.split("\n\n");
   const seeds = seedsSection.split(": ").slice(1)[0].split(" ").map(Number);
@@ -89,8 +87,7 @@ function day5Part1(input: string) {
 
   return minLocation;
 }
-
-function day5Part2(input: string) {
+export function day5Part2(input: string) {
   let maps = parseMaps(input);
   const [seedsSection] = input.split("\n\n");
   const seedRanges = seedsSection
@@ -112,7 +109,3 @@ function day5Part2(input: string) {
 
   return minLocation;
 }
-
-console.log("* Day 5 *");
-console.log("Part 1:", day5Part1(day5Input));
-console.log("Part 2:", day5Part2(day5Input));

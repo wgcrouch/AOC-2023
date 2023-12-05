@@ -1,5 +1,3 @@
-import { day4input } from "./input";
-
 type Card = [winning: Array<string>, ours: Array<string>];
 
 function parseCards(input: string): Array<Card> {
@@ -20,7 +18,7 @@ function parseCards(input: string): Array<Card> {
     });
 }
 
-function day4Part1(input: string) {
+export function day4Part1(input: string) {
   let total = 0;
 
   const cards = parseCards(input);
@@ -43,7 +41,7 @@ function countWins([winning, ours]: Card) {
   return wins;
 }
 
-function day4Part2(input: string) {
+export function day4Part2(input: string) {
   const cards = parseCards(input);
 
   const cardCounts: { [index: number]: number } = {};
@@ -72,7 +70,3 @@ function day4Part2(input: string) {
 
   return total;
 }
-
-console.log("* Day 4 *");
-console.log("Part 1:", day4Part1(day4input));
-console.log("Part 2:", day4Part2(day4input));

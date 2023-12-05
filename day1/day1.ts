@@ -1,7 +1,5 @@
-import { day1input } from "./input";
-
-function part1() {
-  const lines = day1input.split("\n");
+export function day1part1(input: string) {
+  const lines = input.split("\n");
   let total = 0;
   for (let line of lines) {
     const matches = line.match(/\d/g) as Array<number> | null;
@@ -34,8 +32,8 @@ function parseNumber(input: string | undefined): number {
   return values[input] ?? parseInt(input);
 }
 
-function part2() {
-  const lines = day1input.toLowerCase().split("\n");
+export function day1part2(input: string) {
+  const lines = input.toLowerCase().split("\n");
   let total = 0;
   for (let line of lines) {
     const first = line.match(new RegExp(numberMatch))?.[0];
@@ -46,7 +44,3 @@ function part2() {
 
   return total;
 }
-
-console.log("* Day 1 *");
-console.log("Part 1:", part1());
-console.log("Part 2:", part2());

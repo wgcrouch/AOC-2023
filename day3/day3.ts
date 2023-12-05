@@ -1,5 +1,3 @@
-import { day3input } from "./input";
-
 function getNeighbours(
   lines: Array<string>,
   startX: number,
@@ -49,7 +47,7 @@ function getNeighbours(
   return neighbours;
 }
 
-function day3Part1(input: string) {
+export function day3Part1(input: string) {
   const lines = input.split("\n");
 
   let total = 0;
@@ -75,7 +73,7 @@ function day3Part1(input: string) {
   return total;
 }
 
-function day3Part2(input: string) {
+export function day3Part2(input: string) {
   const lines = input.split("\n");
 
   const found: { [key: string]: Array<string> } = {};
@@ -108,7 +106,3 @@ function day3Part2(input: string) {
   }
   return total;
 }
-
-console.log("* Day 3 *");
-console.log("Part 1:", day3Part1(day3input));
-console.log("Part 2:", day3Part2(day3input));
