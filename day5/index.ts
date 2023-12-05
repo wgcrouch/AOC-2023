@@ -1,39 +1,5 @@
 import { day5Input } from "./input";
 
-const exampleInput = `seeds: 79 14 55 13
-
-seed-to-soil map:
-50 98 2
-52 50 48
-
-soil-to-fertilizer map:
-0 15 37
-37 52 2
-39 0 15
-
-fertilizer-to-water map:
-49 53 8
-0 11 42
-42 0 7
-57 7 4
-
-water-to-light map:
-88 18 7
-18 25 70
-
-light-to-temperature map:
-45 77 23
-81 45 19
-68 64 13
-
-temperature-to-humidity map:
-0 69 1
-1 0 69
-
-humidity-to-location map:
-60 56 37
-56 93 4`;
-
 type DestSourceMap = {
   destinationStart: number;
   sourceStart: number;
@@ -51,33 +17,20 @@ const mapOrder = [
 ] as const;
 
 type MapId = (typeof mapOrder)[number];
+type Maps = Record<MapId, Array<DestSourceMap>>;
 
-let maps: Record<MapId, Array<DestSourceMap>> = {
-  "seed-to-soil": [],
-  "soil-to-fertilizer": [],
-  "fertilizer-to-water": [],
-  "water-to-light": [],
-  "light-to-temperature": [],
-  "temperature-to-humidity": [],
-  "humidity-to-location": [],
-};
+function parseMaps(input: string) {
+  let maps: Maps = {
+    "seed-to-soil": [],
+    "soil-to-fertilizer": [],
+    "fertilizer-to-water": [],
+    "water-to-light": [],
+    "light-to-temperature": [],
+    "temperature-to-humidity": [],
+    "humidity-to-location": [],
+  };
 
-function mapId(id: number, source: MapId, destination: MapId) {
-  const map = maps[source].find(
-    ({ sourceStart, destinationStart, length }) =>
-      id >= sourceStart && id <= sourceStart + length,
-  );
-
-  if (map) {
-    return map.destinationStart + id - map.sourceStart;
-  }
-
-  return id;
-}
-
-function day5Part1(input: string) {
-  const [seedsSection, ...mapsSection] = input.split("\n\n");
-  const seeds = seedsSection.split(": ").slice(1)[0].split(" ").map(Number);
+  const [_, ...mapsSection] = input.split("\n\n");
 
   for (const mapString of mapsSection) {
     const [id, valuesString] = mapString.split(" map:\n");
@@ -94,21 +47,52 @@ function day5Part1(input: string) {
     }
   }
 
-  let locations = [];
-  for (const seed of seeds) {
-    const location = mapOrder.reduce((id, source, index) => {
-      const next = mapId(id, source, mapOrder[index - 1]);
-      return next;
-    }, seed);
-
-    locations.push(location);
+  for (let id of mapOrder) {
+    maps[id] = maps[id].sort((a, b) => a.sourceStart - b.sourceStart);
   }
 
-  return Math.min(...locations);
+  return maps;
+}
+
+function mapId(maps: Maps, id: number, source: MapId) {
+  const map = maps[source].find(
+    ({ sourceStart, length }) => id >= sourceStart && id < sourceStart + length,
+  );
+
+  if (map) {
+    return map.destinationStart + id - map.sourceStart;
+  }
+
+  return id;
+}
+
+function findSeedLocation(maps: Maps, seed: number) {
+  const location = mapOrder.reduce((id, source) => {
+    const next = mapId(maps, id, source);
+    return next;
+  }, seed);
+
+  return location;
+}
+
+function day5Part1(input: string) {
+  const maps = parseMaps(input);
+  const [seedsSection] = input.split("\n\n");
+  const seeds = seedsSection.split(": ").slice(1)[0].split(" ").map(Number);
+
+  let minLocation = Number.POSITIVE_INFINITY;
+  for (const seed of seeds) {
+    const location = findSeedLocation(maps, seed);
+
+    minLocation = Math.min(location, minLocation);
+  }
+
+  return minLocation;
 }
 
 function day5Part2(input: string) {
-  const [seedsSection, ...mapsSection] = input.split("\n\n");
+  let maps = parseMaps(input);
+  const [seedsSection] = input.split("\n\n");
   const seedRanges = seedsSection
     .split(": ")
     .slice(1)[0]
@@ -116,15 +100,12 @@ function day5Part2(input: string) {
     .map(Number);
 
   let minLocation = Number.POSITIVE_INFINITY;
+
   for (let i = 0; i < seedRanges.length; i += 2) {
     const start = seedRanges[i];
     const end = start + seedRanges[i + 1];
     for (let seed = start; seed < end; seed++) {
-      const location = mapOrder.reduce((id, source, index) => {
-        const next = mapId(id, source, mapOrder[index - 1]);
-        return next;
-      }, seed);
-      console.log(seed);
+      const location = findSeedLocation(maps, seed);
       minLocation = Math.min(location, minLocation);
     }
   }
