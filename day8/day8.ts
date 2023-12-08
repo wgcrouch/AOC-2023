@@ -12,13 +12,15 @@ function parseInput(input: string) {
 
   const moves = movesString.split("") as Array<"L" | "R">;
 
-  const graph = nodesString.split("\n").reduce((out, s) => {
-    const [node, nextString] = s.split(" = ");
-    const matches = nextString.match(/\(([1-9A-Z]+), ([1-9A-Z]+)\)/)!;
+  let graph: Graph = {};
+  const lines = nodesString.split("\n");
 
-    out[node] = { id: node, L: matches[1], R: matches[2] };
-    return out;
-  }, {} as Graph);
+  for (const line of lines) {
+    const [node, nextString] = line.split(" = ");
+    const matches = nextString.match(/\(([1-9A-Z]+), ([1-9A-Z]+)\)/)!;
+    graph[node] = { id: node, L: matches[1], R: matches[2] };
+  }
+
   return [moves, graph] as const;
 }
 
@@ -50,45 +52,26 @@ export function day8Part2(input: string) {
   const [moves, graph] = parseInput(input);
 
   const startingNodes = Object.keys(graph).filter((key) => key.endsWith("A"));
-  let currentNodes = [...startingNodes];
 
-  let state = startingNodes.map((node) => node[2]).join("");
-  const expected = startingNodes.map(() => "Z").join("");
+  // Track how many steps it takes to get to a Z end for each of the
+  // starting nodes
+  const stepsToFirstZ: Array<number> = [];
 
-  let count = 0;
-  let zCount = 0;
-
-  let i = 0;
-
-  // Track how many steps it takes to get to a Z end, for each of the
-  // simultaneous paths
-  const stepsToZ: Array<number> = [];
-
-  // When we get to 'ZZZZZZ', or we have found the first Z for each, we can stop
-  while (state !== expected && zCount < startingNodes.length) {
-    let nextState = "";
-    const nextMove = moves[i];
-    i = i + 1 === moves.length ? 0 : i + 1;
-    for (let j = 0; j < currentNodes.length; j++) {
-      if (stepsToZ[j]) {
-        continue;
-      }
-      const node = currentNodes[j];
-      const next = graph[node][nextMove];
-      currentNodes[j] = graph[node][nextMove];
-      nextState = nextState + next[2];
-
-      if (next.endsWith("Z")) {
-        stepsToZ[j] = count + 1;
-        zCount++;
-      }
+  for (let nodeIndex = 0; nodeIndex < startingNodes.length; nodeIndex++) {
+    let count = 0;
+    let moveIndex = 0;
+    let current = startingNodes[nodeIndex];
+    while (!current.endsWith("Z")) {
+      const nextMove = moves[moveIndex];
+      moveIndex = moveIndex + 1 === moves.length ? 0 : moveIndex + 1;
+      current = graph[current][nextMove];
+      count++;
     }
 
-    state = nextState;
-    count++;
+    stepsToFirstZ[nodeIndex] = count;
   }
 
   // Find the lowest common multiple, which will show when
   // all the paths to Z repeat at the same point
-  return lcm(...stepsToZ);
+  return lcm(...stepsToFirstZ);
 }
