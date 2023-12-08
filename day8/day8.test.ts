@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { day8Part1, day8Part2, parseInputPart1 } from "./day8";
+import { day8Part1, day8Part2 } from "./day8";
 import { day8input } from "./input";
 
 const day8Example1 = `RL
@@ -35,13 +35,13 @@ test("day 8 part 1 example", () => {
 });
 
 test("day 8 part 1 real", () => {
-  expect(day8Part1(day8input)).toEqual(245794640);
+  expect(day8Part1(day8input)).toEqual(13019);
 });
 
 test("day 8 part 2 example", () => {
   expect(day8Part2(day8Example3)).toEqual(6);
 });
 
-test.only("day 8 part 2 real", () => {
-  expect(day8Part2(day8input)).toEqual(247899149);
+test("day 8 part 2 real", () => {
+  expect(day8Part2(day8input)).toEqual(13524038372771);
 });
