@@ -24,12 +24,12 @@ function getRowsFromHistory(history: Array<number>): Array<Array<number>> {
   return rows;
 }
 
-export function day9Part1(input: string) {
+function calculate(input: string, reverse = false) {
   const histories = parseInput(input);
 
   let total = 0;
   for (let history of histories) {
-    const rows = getRowsFromHistory(history);
+    const rows = getRowsFromHistory(reverse ? [...history].reverse() : history);
 
     for (let i = 0; i < rows.length - 1; i++) {
       rows[i + 1].push(last(rows[i]) + last(rows[i + 1]));
@@ -41,20 +41,10 @@ export function day9Part1(input: string) {
   return total;
 }
 
+export function day9Part1(input: string) {
+  return calculate(input);
+}
+
 export function day9Part2(input: string) {
-  const histories = parseInput(input);
-
-  let total = 0;
-  for (let history of histories) {
-    const rows = getRowsFromHistory(history);
-
-    rows[0].unshift(0);
-    for (let i = 1; i < rows.length; i++) {
-      rows[i].unshift(rows[i][0] - rows[i - 1][0]);
-    }
-
-    total += last(rows)[0];
-  }
-
-  return total;
+  return calculate(input, true);
 }
